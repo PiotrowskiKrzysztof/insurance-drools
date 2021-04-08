@@ -25,9 +25,6 @@ public class RuleFactory {
         packageBuilder.addPackageFromDrl(reader);
         org.drools.core.rule.Package rulesPackage = packageBuilder.getPackage();
         return rulesPackage;
-//        builder.addPackageFromDrl(source);
-//        Package pkg = builder.getPackage();
-//        return pkg;
     }
 
     public RuleBase createRuleBase(Package _package) throws Exception{

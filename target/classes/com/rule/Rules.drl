@@ -1,27 +1,58 @@
 package com.rule
 
 import com.javainuse.model.Contract
+import com.javainuse.model.CarModels
 
 rule "Offer for BMW"
 	when
-		contractObject: Contract(carMark=="BMW")
+		contractObject: Contract(carMark == "BMW");
 	then
 		contractObject.setPrice(contractObject.getPrice() + 1000);
 	end
 
 rule "Offer for Ford"
     when
-        contractObject: Contract(carMark=="Ford")
+        contractObject: Contract(carMark == "Ford");
     then
         contractObject.setPrice(contractObject.getPrice() + 800);
     end
 
 rule "Offer for Skoda"
 	when
-		contractObject: Contract(carMark=="Skoda")
+		contractObject: Contract(carMark == "Skoda");
 	then
 		contractObject.setPrice(contractObject.getPrice() + 600);
 	end
+
+rule "Models for BMW"
+    when
+        carModelsObject: CarModels(selectedMark == "BMW");
+    then
+        carModelsObject.clearList();
+        carModelsObject.addCarModel("Wybierz model");
+        carModelsObject.addCarModel("M3");
+        carModelsObject.addCarModel("M8");
+    end
+
+rule "Models for Ford"
+    when
+        carModelsObject: CarModels(selectedMark == "Ford");
+    then
+        carModelsObject.clearList();
+        carModelsObject.addCarModel("Wybierz model");
+        carModelsObject.addCarModel("Focus");
+        carModelsObject.addCarModel("Mondeo");
+    end
+
+rule "Models for Skoda"
+    when
+        carModelsObject: CarModels(selectedMark == "Skoda");
+    then
+        carModelsObject.clearList();
+        carModelsObject.addCarModel("Wybierz model");
+        carModelsObject.addCarModel("Superb");
+        carModelsObject.addCarModel("Fabia");
+    end
 
 rule "r4 engine"
 	when

@@ -7,6 +7,7 @@ import java.io.Reader;
 
 import com.javainuse.engine.RuleFactory;
 import com.javainuse.gui.MainFrame;
+import com.javainuse.model.Contract;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
