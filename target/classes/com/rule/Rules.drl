@@ -1,69 +1,139 @@
 package com.rule
 
 import com.javainuse.model.Contract
-import com.javainuse.model.CarModels
+import com.javainuse.model.Car
+import com.javainuse.model.Driver
 
-rule "Offer for BMW"
-	when
-		contractObject: Contract(carMark == "BMW");
-	then
-		contractObject.setPrice(contractObject.getPrice() + 1000);
-	end
+global java.lang.Double startPrice;
 
-rule "Offer for Ford"
-    when
-        contractObject: Contract(carMark == "Ford");
-    then
-        contractObject.setPrice(contractObject.getPrice() + 800);
-    end
+rule "start price bmw"
+lock-on-active
+when
+    $car : Car ( carMark == "BMW" )
+    $contract : Contract()
+then
+    System.out.println("Marka samochodu: BMW");
+    $contract.setPrice(startPrice * 3);
+    update($contract);
+end
 
-rule "Offer for Skoda"
-	when
-		contractObject: Contract(carMark == "Skoda");
-	then
-		contractObject.setPrice(contractObject.getPrice() + 600);
-	end
+rule "start price ford"
+lock-on-active
+when
+    $car : Car ( carMark == "Ford" )
+    $contract : Contract()
+then
+    System.out.println("Marka samochodu: ford");
+    $contract.setPrice(startPrice * 2);
+    update($contract);
+end
 
-rule "Models for BMW"
-    when
-        carModelsObject: CarModels(selectedMark == "BMW");
-    then
-        carModelsObject.clearList();
-        carModelsObject.addCarModel("Wybierz model");
-        carModelsObject.addCarModel("M3");
-        carModelsObject.addCarModel("M8");
-    end
+rule "start price skoda"
+lock-on-active
+when
+    $car : Car ( carMark == "Skoda" )
+    $contract : Contract()
+then
+    System.out.println("Marka samochodu: skoda");
+    $contract.setPrice(startPrice);
+    update($contract);
+end
 
-rule "Models for Ford"
-    when
-        carModelsObject: CarModels(selectedMark == "Ford");
-    then
-        carModelsObject.clearList();
-        carModelsObject.addCarModel("Wybierz model");
-        carModelsObject.addCarModel("Focus");
-        carModelsObject.addCarModel("Mondeo");
-    end
+rule "update price BMW seria 3"
+no-loop
+when
+    $car : Car ( carMark == "BMW" && carModel == "seria 3")
+    $contract : Contract()
+then
+    System.out.println("Model samochodu: seria 3");
+    $contract.setPrice($contract.getPrice() * 1.2);
+    update($contract);
+end
 
-rule "Models for Skoda"
-    when
-        carModelsObject: CarModels(selectedMark == "Skoda");
-    then
-        carModelsObject.clearList();
-        carModelsObject.addCarModel("Wybierz model");
-        carModelsObject.addCarModel("Superb");
-        carModelsObject.addCarModel("Fabia");
-    end
+rule "update price BMW seria 6"
+no-loop
+when
+    $car : Car ( carMark == "BMW" && carModel == "seria 6")
+    $contract : Contract()
+then
+    System.out.println("Model samochodu: seria 6");
+    $contract.setPrice($contract.getPrice() * 1.5);
+    update($contract);
+end
 
-rule "r4 engine"
-	when
-		contractObject: Contract(volumeEngine < 2000)
-	then
-		contractObject.setPrice(contractObject.getPrice() + 200);
-	end
+rule "update price Ford Mondeo"
+no-loop
+when
+    $car : Car ( carMark == "Ford" && carModel == "Mondeo")
+    $contract : Contract()
+then
+    System.out.println("Model samochodu: Mondeo");
+    $contract.setPrice($contract.getPrice() * 1.2);
+    update($contract);
+end
 
-rule "r6 engine"
-	when
-		contractObject: Contract(volumeEngine >= 2000)
-	then
-		contractObject.setPrice(contractObject.getPrice() + 400);
-	end
+rule "update price Ford Focus"
+no-loop
+when
+    $car : Car ( carMark == "Ford" && carModel == "Focus")
+    $contract : Contract()
+then
+    System.out.println("Model samochodu: Mondeo");
+    $contract.setPrice($contract.getPrice() * 1.1);
+    update($contract);
+end
+
+rule "update price Skoda Superb"
+no-loop
+when
+    $car : Car ( carMark == "Skoda" && carModel == "Superb")
+    $contract : Contract()
+then
+    System.out.println("Model samochodu: Superb");
+    $contract.setPrice($contract.getPrice() * 1.4);
+    update($contract);
+end
+
+rule "update price Skoda Octavia"
+no-loop
+when
+    $car : Car ( carMark == "Skoda" && carModel == "Octavia")
+    $contract : Contract()
+then
+    $contract.setPrice($contract.getPrice() * 1.2);
+    System.out.println("Model samochodu: Octavia" + $contract.getPrice());
+    update($contract);
+end
+
+rule "niedoswiadczony kierowca sportowe auto"
+no-loop
+when
+    $driver : Driver ( driverAge < 25 )
+    $car : Car ( horsePower > 250 )
+    $contract : Contract()
+then
+    $contract.setPrice($contract.getPrice() * 2);
+    System.out.println("Niedoswiadczony kierowca w sportowym aucie" + $contract.getPrice());
+    retract($contract)
+end
+
+rule "Sportowy samochod"
+no-loop
+when
+    $car : Car ( horsePower > 250 )
+    $contract : Contract()
+then
+    $contract.setPrice($contract.getPrice() * 1.2);
+    System.out.println("To jest sportowy samochod" + $contract.getPrice());
+end
+
+rule "doswiadczony kierowca"
+no-loop
+when
+    $driver : Driver ( driverAge > 25 )
+    $contract : Contract()
+then
+    $contract.setPrice($contract.getPrice() * 0.5);
+    retract($contract)
+    System.out.println("To jest doswiadoczny kierowca" + $contract.getPrice());
+end
