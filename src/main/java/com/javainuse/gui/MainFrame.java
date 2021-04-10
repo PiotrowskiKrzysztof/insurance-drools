@@ -35,7 +35,7 @@ public class MainFrame extends JFrame {
         // Box z markami samochodów
         carMarkCB = new JComboBox();
         Vector<String> marks = new Vector<String>();
-//        marks.add("Wybierz marke");
+        marks.add("Wybierz marke");
         marks.add("BMW");
         marks.add("Ford");
         marks.add("Skoda");
@@ -128,19 +128,19 @@ public class MainFrame extends JFrame {
                     Vector<String> carModelsList = new Vector<String>();
                     if(item.toString() == "BMW") {
                         carModelsList.clear();
-//                        carModelsList.add("Wybierz model");
+                        carModelsList.add("Wybierz model");
                         carModelsList.add("seria 3");
                         carModelsList.add("seria 6");
                     }
                     if(item.toString() == "Ford") {
                         carModelsList.clear();
-//                        carModelsList.add("Wybierz model");
+                        carModelsList.add("Wybierz model");
                         carModelsList.add("Mondeo");
                         carModelsList.add("Focus");
                     }
                     if(item.toString() == "Skoda") {
                         carModelsList.clear();
-//                        carModelsList.add("Wybierz model");
+                        carModelsList.add("Wybierz model");
                         carModelsList.add("Superb");
                         carModelsList.add("Octavia");
                     }
@@ -188,9 +188,9 @@ public class MainFrame extends JFrame {
                 session.fireAllRules();
 
                 getPriceLAB().setText("Cena ubezpieczenia: " + String.valueOf(contract.getPrice()));
-//                System.out.println(contract);
-//                System.out.println(car);
-//                System.out.println(driver);
+                System.out.println(contract);
+                System.out.println(car);
+                System.out.println(driver);
             }
         });
         setVisible(true);

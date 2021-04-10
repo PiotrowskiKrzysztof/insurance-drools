@@ -13,7 +13,7 @@ when
     $contract : Contract()
 then
     System.out.println("Marka samochodu: BMW");
-    $contract.setPrice(startPrice * 3);
+    $contract.setPrice(startPrice * 2.2);
     update($contract);
 end
 
@@ -24,7 +24,7 @@ when
     $contract : Contract()
 then
     System.out.println("Marka samochodu: ford");
-    $contract.setPrice(startPrice * 2);
+    $contract.setPrice(startPrice * 1.5);
     update($contract);
 end
 
@@ -101,8 +101,20 @@ when
     $contract : Contract()
 then
     $contract.setPrice($contract.getPrice() * 1.2);
-    System.out.println("Model samochodu: Octavia" + $contract.getPrice());
+    System.out.println("Model samochodu: Octavia " + $contract.getPrice());
     update($contract);
+end
+
+rule "niedoswiadczony kierowca sportowe BMW"
+no-loop
+when
+    $driver : Driver ( driverAge < 25 )
+    $car : Car ( carMark == "BMW" && horsePower > 250 )
+    $contract : Contract()
+then
+    $contract.setPrice($contract.getPrice() * 2.5);
+    System.out.println("Niedoswiadczony kierowca w sportowym BMW " + $contract.getPrice());
+    retract($contract)
 end
 
 rule "niedoswiadczony kierowca sportowe auto"
@@ -113,7 +125,7 @@ when
     $contract : Contract()
 then
     $contract.setPrice($contract.getPrice() * 2);
-    System.out.println("Niedoswiadczony kierowca w sportowym aucie" + $contract.getPrice());
+    System.out.println("Niedoswiadczony kierowca w sportowym aucie " + $contract.getPrice());
     retract($contract)
 end
 
@@ -124,7 +136,29 @@ when
     $contract : Contract()
 then
     $contract.setPrice($contract.getPrice() * 1.2);
-    System.out.println("To jest sportowy samochod" + $contract.getPrice());
+    System.out.println("To jest sportowy samochod " + $contract.getPrice());
+end
+
+rule "niedoswiadczony kierowca"
+no-loop
+when
+    $driver : Driver ( driverAge < 26 )
+    $contract : Contract()
+then
+    $contract.setPrice($contract.getPrice() * 1.5);
+    System.out.println("To jest niedoswiadoczny kierowca " + $contract.getPrice());
+end
+
+rule "doswiadczony kierowca w Skodzie superb"
+no-loop
+when
+    $driver : Driver ( driverAge > 25 )
+    $car : Car (carMark == "Skoda" && carModel == "Superb")
+    $contract : Contract()
+then
+    $contract.setPrice($contract.getPrice() * 1.1);
+    retract($contract)
+    System.out.println("To jest doswiadoczny kierowca w limuzynie Superb" + $contract.getPrice());
 end
 
 rule "doswiadczony kierowca"
@@ -135,5 +169,6 @@ when
 then
     $contract.setPrice($contract.getPrice() * 0.5);
     retract($contract)
-    System.out.println("To jest doswiadoczny kierowca" + $contract.getPrice());
+    System.out.println("To jest doswiadoczny kierowca " + $contract.getPrice());
 end
+
