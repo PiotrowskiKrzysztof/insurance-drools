@@ -1,174 +1,190 @@
 package com.rule
 
-import com.javainuse.model.Contract
-import com.javainuse.model.Car
-import com.javainuse.model.Driver
+import com.javainuse.model.*
 
 global java.lang.Double startPrice;
 
-rule "start price bmw"
+rule "init"
 lock-on-active
+salience 100
 when
-    $car : Car ( carMark == "BMW" )
-    $contract : Contract()
+    $contract : Contract($c : car, $d: driver)
 then
-    System.out.println("Marka samochodu: BMW");
-    $contract.setPrice(startPrice * 2.2);
+    $contract.log("Inicjalizacja samochodu i kierowcy");
+    insert($c);
+    insert($d);
+end
+
+rule "start price BMW seria 3"
+no-loop
+enabled ($car.getCarType() == null)
+when
+    $contract : Contract($c : car)
+    $car : Car (this == $c, carMark == CarMarks.BMW.toString(), carModel == CarModels.Seria3.toString())
+then
+    $contract.log("Marka samochodu: " + $car.getCarMark());
+    $contract.log("Model samochodu: " + $car.getCarModel());
+    modify($contract) {
+        setPrice(startPrice * CarModels.Seria3.getRatioModel());
+    };
+    modify($car) {
+        setCarType(CarType.SEGMENT_D);
+    };
+end
+
+rule "start price BMW seria 6"
+no-loop
+enabled ($car.getCarType() == null)
+when
+    $contract : Contract($c : car)
+    $car : Car (this == $c, carMark == CarMarks.BMW.toString(), carModel == CarModels.Seria6.toString())
+then
+    $contract.log("Marka samochodu: " + $car.getCarMark());
+    $contract.log("Model samochodu: " + $car.getCarModel());
+    modify($contract) {
+        setPrice(startPrice * CarModels.Seria6.getRatioModel());
+    };
+    modify($car) {
+        setCarType(CarType.SEGMENT_S);
+    };
+end
+
+rule "start price Ford Mondeo"
+no-loop
+enabled ($car.getCarType() == null)
+when
+    $contract : Contract($c : car)
+    $car : Car (this == $c, carMark == CarMarks.Ford.toString(), carModel == CarModels.Mondeo.toString())
+then
+    $contract.log("Marka samochodu: " + $car.getCarMark());
+    $contract.log("Model samochodu: " + $car.getCarModel());
+    modify($contract) {
+        setPrice(startPrice * CarModels.Mondeo.getRatioModel());
+    };
+    modify($car) {
+        setCarType(CarType.SEGMENT_D);
+    };
+end
+
+rule "start price Ford Focus"
+no-loop
+enabled ($car.getCarType() == null)
+when
+    $contract : Contract($c : car)
+    $car : Car (this == $c, carMark == CarMarks.Ford.toString(), carModel == CarModels.Focus.toString())
+then
+    $contract.log("Marka samochodu: " + $car.getCarMark());
+    $contract.log("Model samochodu: " + $car.getCarModel());
+    modify($contract) {
+        setPrice(startPrice * CarModels.Focus.getRatioModel());
+    };
+    modify($car) {
+        setCarType(CarType.SEGMENT_C);
+    };
+end
+
+rule "start price Skoda Superb"
+no-loop
+enabled ($car.getCarType() == null)
+when
+    $contract : Contract($c : car)
+    $car : Car (this == $c, carMark == CarMarks.Skoda.toString(), carModel == CarModels.Superb.toString())
+then
+    $contract.log("Marka samochodu: " + $car.getCarMark());
+    $contract.log("Model samochodu: " + $car.getCarModel());
+    modify($contract) {
+        setPrice(startPrice * CarModels.Superb.getRatioModel());
+    };
+    modify($car) {
+        setCarType(CarType.SEGMENT_D);
+    };
+end
+
+rule "start price Skoda Octavia"
+no-loop
+enabled ($car.getCarType() == null)
+when
+    $contract : Contract($c : car)
+    $car : Car (this == $c, carMark == CarMarks.Skoda.toString(), carModel == CarModels.Octavia.toString())
+then
+    $contract.log("Marka samochodu: " + $car.getCarMark());
+    $contract.log("Model samochodu: " + $car.getCarModel());
+    modify($contract) {
+        setPrice(startPrice * CarModels.Octavia.getRatioModel());
+    };
+    modify($car) {
+        setCarType(CarType.SEGMENT_C);
+    };
+end
+
+rule "price segment_S"
+no-loop
+when
+    $contract : Contract($c : car)
+    $car : Car (this == $c, carType == CarType.SEGMENT_S)
+then
+    $contract.log("Samochod segmentu S");
+    $contract.setPrice($contract.getPrice() * CarType.SEGMENT_S.getRatio());
     update($contract);
 end
 
-rule "start price ford"
-lock-on-active
-when
-    $car : Car ( carMark == "Ford" )
-    $contract : Contract()
-then
-    System.out.println("Marka samochodu: ford");
-    $contract.setPrice(startPrice * 1.5);
-    update($contract);
-end
-
-rule "start price skoda"
-lock-on-active
-when
-    $car : Car ( carMark == "Skoda" )
-    $contract : Contract()
-then
-    System.out.println("Marka samochodu: skoda");
-    $contract.setPrice(startPrice);
-    update($contract);
-end
-
-rule "update price BMW seria 3"
+rule "price segment_D"
 no-loop
 when
-    $car : Car ( carMark == "BMW" && carModel == "seria 3")
-    $contract : Contract()
+    $contract : Contract($c : car)
+    $car : Car (this == $c, carType == CarType.SEGMENT_D)
 then
-    System.out.println("Model samochodu: seria 3");
-    $contract.setPrice($contract.getPrice() * 1.2);
-    update($contract);
+    $contract.log("Samochod segmentu D");
+    modify($contract) {
+        setPrice($contract.getPrice() * CarType.SEGMENT_D.getRatio());
+    };
 end
 
-rule "update price BMW seria 6"
+rule "price segment_C"
 no-loop
 when
-    $car : Car ( carMark == "BMW" && carModel == "seria 6")
-    $contract : Contract()
+    $contract : Contract($c : car)
+    $car : Car (this == $c, carType == CarType.SEGMENT_C)
 then
-    System.out.println("Model samochodu: seria 6");
-    $contract.setPrice($contract.getPrice() * 1.5);
-    update($contract);
+    $contract.log("Samochod segmentu C");
+    modify($contract) {
+        setPrice($contract.getPrice() * CarType.SEGMENT_C.getRatio());
+    };
 end
 
-rule "update price Ford Mondeo"
+rule "set exprienced driver"
+no-loop
+enabled ($driver.getDriverType() == null)
+when
+    $contract : Contract($d : driver)
+    $driver : Driver (this == $d, driverAge >= 26)
+then
+    $contract.log("To jest doświadczony kierowca");
+    modify($driver) {
+        setDriverType(DriverType.EXPRIENCED);
+    };
+end
+
+rule "set inexprienced driver"
+no-loop
+enabled ($driver.getDriverType() == null)
+when
+    $contract : Contract($d : driver)
+    $driver : Driver (this == $d, driverAge < 26)
+then
+    $contract.log("To jest niedoświadczony kierowca");
+    modify($driver) {
+        setDriverType(DriverType.INEXPRIENCED);
+    };
+end
+
+rule "discount 50% exprienced driver"
 no-loop
 when
-    $car : Car ( carMark == "Ford" && carModel == "Mondeo")
-    $contract : Contract()
+    $contract : Contract($d : driver)
+    $driver : Driver (this == $d, driverType == DriverType.EXPRIENCED)
 then
-    System.out.println("Model samochodu: Mondeo");
-    $contract.setPrice($contract.getPrice() * 1.2);
-    update($contract);
+    $contract.setDiscount(new Discount(0.5));
+    $contract.setPrice($contract.getPrice() * $contract.getDiscount().getPercentage());
+    $contract.log("Naliczona zniżka doświadczonego kierowcy");
 end
-
-rule "update price Ford Focus"
-no-loop
-when
-    $car : Car ( carMark == "Ford" && carModel == "Focus")
-    $contract : Contract()
-then
-    System.out.println("Model samochodu: Mondeo");
-    $contract.setPrice($contract.getPrice() * 1.1);
-    update($contract);
-end
-
-rule "update price Skoda Superb"
-no-loop
-when
-    $car : Car ( carMark == "Skoda" && carModel == "Superb")
-    $contract : Contract()
-then
-    System.out.println("Model samochodu: Superb");
-    $contract.setPrice($contract.getPrice() * 1.4);
-    update($contract);
-end
-
-rule "update price Skoda Octavia"
-no-loop
-when
-    $car : Car ( carMark == "Skoda" && carModel == "Octavia")
-    $contract : Contract()
-then
-    $contract.setPrice($contract.getPrice() * 1.2);
-    System.out.println("Model samochodu: Octavia " + $contract.getPrice());
-    update($contract);
-end
-
-rule "niedoswiadczony kierowca sportowe BMW"
-no-loop
-when
-    $driver : Driver ( driverAge < 25 )
-    $car : Car ( carMark == "BMW" && horsePower > 250 )
-    $contract : Contract()
-then
-    $contract.setPrice($contract.getPrice() * 2.5);
-    System.out.println("Niedoswiadczony kierowca w sportowym BMW " + $contract.getPrice());
-    retract($contract)
-end
-
-rule "niedoswiadczony kierowca sportowe auto"
-no-loop
-when
-    $driver : Driver ( driverAge < 25 )
-    $car : Car ( horsePower > 250 )
-    $contract : Contract()
-then
-    $contract.setPrice($contract.getPrice() * 2);
-    System.out.println("Niedoswiadczony kierowca w sportowym aucie " + $contract.getPrice());
-    retract($contract)
-end
-
-rule "Sportowy samochod"
-no-loop
-when
-    $car : Car ( horsePower > 250 )
-    $contract : Contract()
-then
-    $contract.setPrice($contract.getPrice() * 1.2);
-    System.out.println("To jest sportowy samochod " + $contract.getPrice());
-end
-
-rule "niedoswiadczony kierowca"
-no-loop
-when
-    $driver : Driver ( driverAge < 26 )
-    $contract : Contract()
-then
-    $contract.setPrice($contract.getPrice() * 1.5);
-    System.out.println("To jest niedoswiadoczny kierowca " + $contract.getPrice());
-end
-
-rule "doswiadczony kierowca w Skodzie superb"
-no-loop
-when
-    $driver : Driver ( driverAge > 25 )
-    $car : Car (carMark == "Skoda" && carModel == "Superb")
-    $contract : Contract()
-then
-    $contract.setPrice($contract.getPrice() * 1.1);
-    retract($contract)
-    System.out.println("To jest doswiadoczny kierowca w limuzynie Superb" + $contract.getPrice());
-end
-
-rule "doswiadczony kierowca"
-no-loop
-when
-    $driver : Driver ( driverAge > 25 )
-    $contract : Contract()
-then
-    $contract.setPrice($contract.getPrice() * 0.5);
-    retract($contract)
-    System.out.println("To jest doswiadoczny kierowca " + $contract.getPrice());
-end
-

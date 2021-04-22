@@ -3,9 +3,18 @@ package com.javainuse.model;
 public class Car {
     private String carMark;
     private String carModel;
+    private CarType carType;
 //    private int carAge;
 //    private double volumeEngine;
     private int horsePower;
+
+    public CarType getCarType() {
+        return carType;
+    }
+
+    public void setCarType(CarType carType) {
+        this.carType = carType;
+    }
 
     public void setCarMark(String carMark) {
         this.carMark = carMark;
@@ -52,8 +61,7 @@ public class Car {
         return "Car{" +
                 "carMark='" + carMark + '\'' +
                 ", carModel='" + carModel + '\'' +
-//                ", carAge=" + carAge +
-//                ", volumeEngine=" + volumeEngine +
+                ", carType=" + carType +
                 ", horsePower=" + horsePower +
                 '}';
     }

@@ -1,14 +1,13 @@
 package com.javainuse.gui;
 
-import com.javainuse.model.Car;
+import com.javainuse.model.CarMarks;
+import com.javainuse.model.CarModels;
 import com.javainuse.model.Contract;
-import com.javainuse.model.Driver;
 import org.drools.core.StatefulSession;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.text.DecimalFormat;
 import java.util.Vector;
 
 public class MainFrame extends JFrame {
@@ -36,9 +35,9 @@ public class MainFrame extends JFrame {
         carMarkCB = new JComboBox();
         Vector<String> marks = new Vector<String>();
         marks.add("Wybierz marke");
-        marks.add("BMW");
-        marks.add("Ford");
-        marks.add("Skoda");
+        for(CarMarks mark : CarMarks.values()) {
+            marks.add(mark.toString());
+        }
         carMarkCB.setModel(new DefaultComboBoxModel(marks));
 
         // Box z modelami samochodu
@@ -126,24 +125,30 @@ public class MainFrame extends JFrame {
                         carMarkCB.removeItem("Wybierz marke");
                     }
                     Vector<String> carModelsList = new Vector<String>();
-                    if(item.toString() == "BMW") {
-                        carModelsList.clear();
-                        carModelsList.add("Wybierz model");
-                        carModelsList.add("seria 3");
-                        carModelsList.add("seria 6");
+                    carModelsList.add("Wybierz model");
+                    for(CarModels model : CarModels.values()) {
+                        if(model.getCarMark() == item.toString()) {
+                            carModelsList.add(model.toString());
+                        }
                     }
-                    if(item.toString() == "Ford") {
-                        carModelsList.clear();
-                        carModelsList.add("Wybierz model");
-                        carModelsList.add("Mondeo");
-                        carModelsList.add("Focus");
-                    }
-                    if(item.toString() == "Skoda") {
-                        carModelsList.clear();
-                        carModelsList.add("Wybierz model");
-                        carModelsList.add("Superb");
-                        carModelsList.add("Octavia");
-                    }
+//                    if(item.toString() == "BMW") {
+//                        carModelsList.clear();
+//                        carModelsList.add("Wybierz model");
+//                        carModelsList.add("seria 3");
+//                        carModelsList.add("seria 6");
+//                    }
+//                    if(item.toString() == "Ford") {
+//                        carModelsList.clear();
+//                        carModelsList.add("Wybierz model");
+//                        carModelsList.add("Mondeo");
+//                        carModelsList.add("Focus");
+//                    }
+//                    if(item.toString() == "Skoda") {
+//                        carModelsList.clear();
+//                        carModelsList.add("Wybierz model");
+//                        carModelsList.add("Superb");
+//                        carModelsList.add("Octavia");
+//                    }
 
                     carModelCB.setModel(new DefaultComboBoxModel(carModelsList));
                 }
@@ -167,21 +172,21 @@ public class MainFrame extends JFrame {
             public void mousePressed(MouseEvent e) {
                 Contract contract = new Contract();
 
-                Driver driver = new Driver();
-                driver.setDriverAge((Integer)driversAgeCB.getSelectedItem());
+//                Driver driver = new Driver();
+                contract.getDriver().setDriverAge((Integer)driversAgeCB.getSelectedItem());
 //                driver.setYearsDriverLicence((Integer)driversAgeCB.getSelectedItem());
 //                driver.setGender(genderCB.getSelectedItem().toString());
 
-                Car car = new Car();
-                car.setCarMark(carMarkCB.getSelectedItem().toString());
-                car.setCarModel(carModelCB.getSelectedItem().toString());
+//                Car car = new Car();
+                contract.getCar().setCarMark(carMarkCB.getSelectedItem().toString());
+                contract.getCar().setCarModel(carModelCB.getSelectedItem().toString());
 //                car.setCarAge((Integer)carAgeCB.getSelectedItem());
 //                car.setVolumeEngine((Double)volumeEngineCB.getSelectedItem());
-                car.setHorsePower((Integer)horsePowerCB.getSelectedItem());
+                contract.getCar().setHorsePower((Integer)horsePowerCB.getSelectedItem());
 
                 session.insert(contract);
-                session.insert(driver);
-                session.insert(car);
+//                session.insert(driver);
+//                session.insert(car);
 
                 session.setGlobal("startPrice", 1000.0);
 
@@ -189,8 +194,8 @@ public class MainFrame extends JFrame {
 
                 getPriceLAB().setText("Cena ubezpieczenia: " + String.valueOf(contract.getPrice()));
                 System.out.println(contract);
-                System.out.println(car);
-                System.out.println(driver);
+//                System.out.println(car);
+//                System.out.println(driver);
             }
         });
         setVisible(true);
