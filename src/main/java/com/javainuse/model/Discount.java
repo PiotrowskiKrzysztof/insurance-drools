@@ -17,7 +17,6 @@ public class Discount {
     public void setPercentage(double percentage) {
         this.percentage = percentage;
     }
-
     public double getPercentage() {
         return percentage;
     }

@@ -53,6 +53,6 @@ public class Contract {
     }
 
     public void log(String tmp){
-        System.out.println(tmp);
+//        System.out.println(tmp);
     }
 }

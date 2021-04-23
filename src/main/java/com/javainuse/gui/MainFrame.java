@@ -12,6 +12,7 @@ import java.util.Vector;
 
 public class MainFrame extends JFrame {
 
+    private JPanel panel;
     private JButton calculateBTTN; //przycisk do obliczenia ubezpieczenia
     private JComboBox carMarkCB; // Box z wyborem marki auta
     private JComboBox carModelCB; // Box z modelem samochodu
@@ -22,13 +23,21 @@ public class MainFrame extends JFrame {
     private JComboBox carLicenceAgeCB; // Box z latami posiadania prawa jazdy
     private JComboBox genderCB; // Box z płcią kierowcy
     private JComboBox accidentFreeDrivingCB; // Box z pytaniem, czy kierowca mial ostatnio wypadek
-    private JLabel priceLAB; // etykieta z oszacowaną
+    private JLabel priceLAB; // etykieta z oszacowaną cena
+    private JLabel carMarkLAB;
+    private JLabel carModelLAB;
+    private JLabel driverAgeLAB;
+    private JLabel horsePowerLAB;
+    private JLabel descCarLAB;
+    private JLabel descDriverLAB;
+    private JLabel descDiscountLAB;
 
     private void init() {
         // Layout okna programu
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(800, 300));
-        setLayout(new GridLayout(3, 5));
+        setMinimumSize(new Dimension(600, 500));
+        setLayout(new GridLayout(6, 2));
         setTitle("Calculate OC");
 
         // Box z markami samochodów
@@ -97,20 +106,39 @@ public class MainFrame extends JFrame {
         // etykieta z ceną
         priceLAB = new JLabel();
 
+        // etykiety opisowe
+        carMarkLAB = new JLabel("Wybierz markę samochodu:");
+        carModelLAB = new JLabel("Wybierz model samochodu:");
+        driverAgeLAB = new JLabel("Wybierz wiek kierowcy:");
+        horsePowerLAB = new JLabel("Wybierz moc samochodu:");
+
+        // etykiety podsumowujące
+        descCarLAB = new JLabel();
+
+        descDriverLAB = new JLabel();
+        descDiscountLAB = new JLabel();
+
         // przycisk do wyliczenia ceny ubezpieczenia
         calculateBTTN = new JButton("Wylicz cenę!");
 
         // dodanie elementow do layoutu
+        add(carMarkLAB);
         add(carMarkCB);
+        add(carModelLAB);
         add(carModelCB);
 //        add(carAgeCB);
 //        add(volumeEngineCB);
+        add(horsePowerLAB);
         add(horsePowerCB);
+        add(driverAgeLAB);
         add(driversAgeCB);
 //        add(carLicenceAgeCB);
 //        add(genderCB);
         add(priceLAB);
         add(calculateBTTN);
+        add(descCarLAB);
+        add(descDriverLAB);
+//        add(descDiscountLAB);
     }
 
     // konstruktor
@@ -192,7 +220,39 @@ public class MainFrame extends JFrame {
 
                 session.fireAllRules();
 
-                getPriceLAB().setText("Cena ubezpieczenia: " + String.valueOf(contract.getPrice()));
+                getPriceLAB().setText(
+                        "<html>" +
+                        "<b>" + "Cena ubezpieczenia: " + String.valueOf(contract.getPrice()) + "<br>" +
+                        "</html>"
+                );
+
+                getDescCarLAB().setText(
+                        "<html>" +
+                        "Samochód marki: " + contract.getCar().getCarMark() + "<br>" +
+                        "Model: " + contract.getCar().getCarModel() + "<br>" +
+                        "Segment samochodu: " + contract.getCar().getCarType().toString() + "<br>" +
+                        "Moc samochodu: " + contract.getCar().getHorsePower() + "km" + "<br>" +
+                        "</html>"
+                );
+
+                String drivType = "";
+                if(contract.getDriver().getDriverType().toString() == "EXPRIENCED") drivType = "Doświadczony kierowca";
+                else if (contract.getDriver().getDriverType().toString() == "INEXPRIENCED") drivType = "Niedoświadczony kierowca";
+
+                String disc = "";
+                if(contract.getDiscount() == null) {
+                    disc = "Nie uwzględniono ci żadnych zniżek";
+                } else {
+                    disc = "Twoja zniżka wynosi: " + contract.getDiscount().getPercentage() * 100 + "%";
+                }
+
+                getDescDriverLAB().setText(
+                        "<html>" +
+                            drivType + "<br>" +
+                            disc +
+                        "</html>"
+                );
+
                 System.out.println(contract);
 //                System.out.println(car);
 //                System.out.println(driver);
@@ -281,5 +341,11 @@ public class MainFrame extends JFrame {
         return accidentFreeDrivingCB;
     }
 
+    public JLabel getCarMarkLAB() {return carMarkLAB;}
 
+    public JLabel getDescCarLAB() {return descCarLAB;}
+
+    public JLabel getDescDriverLAB() {return descDriverLAB;}
+
+    public JLabel getDescDiscountLAB() {return descDiscountLAB;}
 }
