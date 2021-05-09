@@ -6,23 +6,27 @@ import com.javainuse.model.Contract;
 import org.drools.core.StatefulSession;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
 
 public class MainFrame extends JFrame {
 
-    private JPanel panel;
+    private JFrame mainFrame;
+    private JPanel mainPanel;
+    private JPanel northPanel;
+    private JPanel centerPanel;
+    private JPanel footerPanel;
     private JButton calculateBTTN; //przycisk do obliczenia ubezpieczenia
     private JComboBox carMarkCB; // Box z wyborem marki auta
     private JComboBox carModelCB; // Box z modelem samochodu
     private JComboBox carAgeCB; // Box z wiekiem samochodu
-    private JComboBox volumeEngineCB; // Box z pojemnością silnika
     private JComboBox horsePowerCB; // Box z mocą silnika
     private JComboBox driversAgeCB; // Box z wiekiem kierowcy
-    private JComboBox carLicenceAgeCB; // Box z latami posiadania prawa jazdy
-    private JComboBox genderCB; // Box z płcią kierowcy
-    private JComboBox accidentFreeDrivingCB; // Box z pytaniem, czy kierowca mial ostatnio wypadek
     private JLabel priceLAB; // etykieta z oszacowaną cena
     private JLabel carMarkLAB;
     private JLabel carModelLAB;
@@ -32,13 +36,36 @@ public class MainFrame extends JFrame {
     private JLabel descDriverLAB;
     private JLabel descDiscountLAB;
 
+    Color GRAY_BLUE = new Color(139, 154, 169);
+
     private void init() {
         // Layout okna programu
+        this.mainFrame = new JFrame("Kalkulator OC");
+        this.mainFrame.setLayout(new BorderLayout());
+        this.mainFrame.setSize(new Dimension(600,720));
+        this.mainFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(600, 500));
-        setLayout(new GridLayout(6, 2));
-        setTitle("Calculate OC");
+        this.mainPanel = new JPanel();
+        this.mainPanel.setLayout(new BorderLayout());
+        this.mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        this.northPanel = new JPanel();
+        TitledBorder titled = BorderFactory.createTitledBorder("Określanie profilu kierowcy oraz auta");
+//        titled.setTitleColor(GRAY_BLUE);
+//        titled.setBorder();
+        Border northPanelBorder = titled;
+        Border northPanelMargin = new EmptyBorder(10, 10, 10, 10);
+        this.northPanel.setBorder(new CompoundBorder(northPanelBorder, northPanelMargin));
+        this.northPanel.setPreferredSize(new Dimension(600, 250));
+        this.northPanel.setLayout(new GridLayout(4, 2));
+
+        this.centerPanel = new JPanel();
+        this.centerPanel.setLayout(new BorderLayout());
+
+        this.footerPanel = new JPanel();
+        this.footerPanel.setLayout(new BorderLayout());
+
+
 
         // Box z markami samochodów
         carMarkCB = new JComboBox();
@@ -63,14 +90,6 @@ public class MainFrame extends JFrame {
         }
         carAgeCB.setModel(new DefaultComboBoxModel(cAge));
 
-        // Box z pojemnoscią silnika
-        volumeEngineCB = new JComboBox();
-        Vector<Double> volEnd = new Vector<Double>();
-        volEnd.add(1.4);
-        volEnd.add(2.0);
-        volEnd.add(3.0);
-        volumeEngineCB.setModel(new DefaultComboBoxModel(volEnd));
-
         // Box z mocą silnika
         horsePowerCB = new JComboBox();
         Vector<Integer> hp = new Vector<Integer>();
@@ -87,30 +106,14 @@ public class MainFrame extends JFrame {
         }
         driversAgeCB.setModel(new DefaultComboBoxModel(dAge));
 
-        // Box z latami posiadania prawa jazdy
-        carLicenceAgeCB = new JComboBox();
-        Vector<Integer> clAge = new Vector<Integer>();
-        for(int i = 1; i < 100; i++) {
-            clAge.add(i);
-        }
-        carLicenceAgeCB.setModel(new DefaultComboBoxModel(clAge));
-
-        // Box z płcią kierowcy
-        genderCB = new JComboBox();
-        Vector<String> g = new Vector<String>();
-        g.add("Kobieta");
-        g.add("Mężczyzna");
-        genderCB.setModel(new DefaultComboBoxModel(g));
-
-
         // etykieta z ceną
         priceLAB = new JLabel();
 
         // etykiety opisowe
-        carMarkLAB = new JLabel("Wybierz markę samochodu:");
-        carModelLAB = new JLabel("Wybierz model samochodu:");
-        driverAgeLAB = new JLabel("Wybierz wiek kierowcy:");
-        horsePowerLAB = new JLabel("Wybierz moc samochodu:");
+        carMarkLAB = new JLabel("Marka samochodu:");
+        carModelLAB = new JLabel("Model samochodu:");
+        driverAgeLAB = new JLabel("Wiek kierowcy:");
+        horsePowerLAB = new JLabel("Moc samochodu:");
 
         // etykiety podsumowujące
         descCarLAB = new JLabel();
@@ -122,23 +125,38 @@ public class MainFrame extends JFrame {
         calculateBTTN = new JButton("Wylicz cenę!");
 
         // dodanie elementow do layoutu
-        add(carMarkLAB);
-        add(carMarkCB);
-        add(carModelLAB);
-        add(carModelCB);
-//        add(carAgeCB);
-//        add(volumeEngineCB);
-        add(horsePowerLAB);
-        add(horsePowerCB);
-        add(driverAgeLAB);
-        add(driversAgeCB);
-//        add(carLicenceAgeCB);
-//        add(genderCB);
-        add(priceLAB);
-        add(calculateBTTN);
-        add(descCarLAB);
-        add(descDriverLAB);
-//        add(descDiscountLAB);
+        this.mainFrame.add(this.mainPanel, BorderLayout.CENTER);
+        this.mainPanel.add(this.northPanel, BorderLayout.NORTH);
+        this.mainPanel.add(this.centerPanel, BorderLayout.CENTER);
+        this.northPanel.add(carMarkLAB);
+        this.northPanel.add(carMarkCB);
+        this.northPanel.add(carModelLAB);
+        this.northPanel.add(carModelCB);
+        this.northPanel.add(horsePowerLAB);
+        this.northPanel.add(horsePowerCB);
+        this.northPanel.add(driverAgeLAB);
+        this.northPanel.add(driversAgeCB);
+        this.mainFrame.add(footerPanel, BorderLayout.SOUTH);
+        this.footerPanel.add(calculateBTTN, BorderLayout.NORTH);
+        this.footerPanel.add(new JLabel("Projekt na zaliczenie przedmiotu Systemy ekspertowe", SwingConstants.CENTER), BorderLayout.CENTER);
+        this.footerPanel.add(new JLabel("Wykonawcy: Krzysztof Piotrowski oraz Daniel Sadłowski", SwingConstants.CENTER), BorderLayout.SOUTH);
+        calculateBTTN.setPreferredSize(new Dimension(600, 50));
+
+        Border marginLAB = new EmptyBorder(10, 10, 10, 10);
+        this.centerPanel.add(priceLAB, BorderLayout.NORTH);
+        Border priceLABBorder = BorderFactory.createTitledBorder("Dane ubezpieczenia");
+        priceLAB.setBorder(new CompoundBorder(priceLABBorder, marginLAB));
+        priceLAB.setPreferredSize(new Dimension(600, 110));
+        priceLAB.setFont(new Font(priceLAB.getFont().toString(), Font.BOLD, 22));
+        this.centerPanel.add(descCarLAB, BorderLayout.CENTER);
+        Border descCarLABBorder = BorderFactory.createTitledBorder("Dane pojazdu");
+        descCarLAB.setBorder(new CompoundBorder(descCarLABBorder, marginLAB));
+        descCarLAB.setPreferredSize(new Dimension(600, 110));
+        this.centerPanel.add(descDriverLAB, BorderLayout.SOUTH);
+        Border descDriverLABBorder = BorderFactory.createTitledBorder("Dane kierowcy");
+        descDriverLAB.setBorder(new CompoundBorder(descDriverLABBorder, marginLAB));
+        descDriverLAB.setPreferredSize(new Dimension(600, 110));
+
     }
 
     // konstruktor
@@ -159,25 +177,6 @@ public class MainFrame extends JFrame {
                             carModelsList.add(model.toString());
                         }
                     }
-//                    if(item.toString() == "BMW") {
-//                        carModelsList.clear();
-//                        carModelsList.add("Wybierz model");
-//                        carModelsList.add("seria 3");
-//                        carModelsList.add("seria 6");
-//                    }
-//                    if(item.toString() == "Ford") {
-//                        carModelsList.clear();
-//                        carModelsList.add("Wybierz model");
-//                        carModelsList.add("Mondeo");
-//                        carModelsList.add("Focus");
-//                    }
-//                    if(item.toString() == "Skoda") {
-//                        carModelsList.clear();
-//                        carModelsList.add("Wybierz model");
-//                        carModelsList.add("Superb");
-//                        carModelsList.add("Octavia");
-//                    }
-
                     carModelCB.setModel(new DefaultComboBoxModel(carModelsList));
                 }
             }
@@ -258,15 +257,11 @@ public class MainFrame extends JFrame {
 //                System.out.println(driver);
             }
         });
-        setVisible(true);
+        mainFrame.setVisible(true);
     }
 
     public JComboBox getCarAgeCB() {
         return carAgeCB;
-    }
-
-    public JComboBox getVolumeEngineCB() {
-        return volumeEngineCB;
     }
 
     public JComboBox getHorsePowerCB() {
@@ -281,20 +276,12 @@ public class MainFrame extends JFrame {
         this.carAgeCB = carAgeCB;
     }
 
-    public void setVolumeEngineCB(JComboBox volumeEngineCB) {
-        this.volumeEngineCB = volumeEngineCB;
-    }
-
     public void setHorsePowerCB(JComboBox horsePowerCB) {
         this.horsePowerCB = horsePowerCB;
     }
 
     public void setDriversAgeCB(JComboBox driversAgeCB) {
         this.driversAgeCB = driversAgeCB;
-    }
-
-    public void setCarLicenceAgeCB(JComboBox carLicenceAgeCB) {
-        this.carLicenceAgeCB = carLicenceAgeCB;
     }
 
     public JButton getCalculateBTTN() {
@@ -313,10 +300,6 @@ public class MainFrame extends JFrame {
         return driversAgeCB;
     }
 
-    public JComboBox getCarLicenceAgeCB() {
-        return carLicenceAgeCB;
-    }
-
     public JLabel getPriceLAB() {
         return priceLAB;
     }
@@ -331,14 +314,6 @@ public class MainFrame extends JFrame {
 
     public void setPriceLAB(JLabel priceLAB) {
         this.priceLAB = priceLAB;
-    }
-
-    public JComboBox getGenderCB() {
-        return genderCB;
-    }
-
-    public JComboBox getAccidentFreeDrivingCB() {
-        return accidentFreeDrivingCB;
     }
 
     public JLabel getCarMarkLAB() {return carMarkLAB;}
